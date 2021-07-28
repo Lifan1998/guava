@@ -22,6 +22,8 @@ import com.google.common.base.MoreObjects;
 /**
  * Wraps an event that was posted, but which had no subscribers and thus could not be delivered.
  *
+ * 包装已发布但没有订阅者因此无法传递的事件。
+ *
  * <p>Registering a DeadEvent subscriber is useful for debugging or logging, as it can detect
  * misconfigurations in a system's event distribution.
  *

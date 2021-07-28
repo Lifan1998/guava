@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 /**
  * Context for an exception thrown by a subscriber.
  *
+ * 订阅者抛出的异常的上下文。
+ *
  * @since 16.0
  */
 public class SubscriberExceptionContext {

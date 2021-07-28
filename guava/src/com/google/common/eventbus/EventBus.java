@@ -29,6 +29,8 @@ import java.util.logging.Logger;
 /**
  * Dispatches events to listeners, and provides ways for listeners to register themselves.
  *
+ * 将事件分派给监听器，并为监听器提供注册自己的方法。
+ *
  * <p>The EventBus allows publish-subscribe-style communication between components without requiring
  * the components to explicitly register with one another (and thus be aware of each other). It is
  * designed exclusively to replace traditional Java in-process event distribution using explicit

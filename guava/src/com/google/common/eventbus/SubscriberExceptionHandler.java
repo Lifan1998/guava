@@ -17,6 +17,8 @@ package com.google.common.eventbus;
 /**
  * Handler for exceptions thrown by event subscribers.
  *
+ * 事件订阅者抛出的异常处理程序。
+ *
  * @since 16.0
  */
 public interface SubscriberExceptionHandler {

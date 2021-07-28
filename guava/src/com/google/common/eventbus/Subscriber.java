@@ -27,6 +27,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A subscriber method on a specific object, plus the executor that should be used for dispatching
  * events to it.
  *
+ * 特定对象上的订阅者方法，以及应该用于向其分派事件的执行程序。
+ *
  * <p>Two subscribers are equivalent when they refer to the same method on the same object (not
  * class). This property is used to ensure that no subscriber method is registered more than once.
  *

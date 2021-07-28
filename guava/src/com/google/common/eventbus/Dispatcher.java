@@ -25,6 +25,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Handler for dispatching events to subscribers, providing different event ordering guarantees that
  * make sense for different situations.
  *
+ * 用于将事件分派给订阅者的处理程序，提供对不同情况有意义的不同事件排序保证。
+ *
  * <p><b>Note:</b> The dispatcher is orthogonal to the subscriber's {@code Executor}. The dispatcher
  * controls the order in which events are dispatched, while the executor controls how (i.e. on which
  * thread) the subscriber is actually called when an event is dispatched to it.

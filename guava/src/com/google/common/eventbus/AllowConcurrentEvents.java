@@ -24,6 +24,8 @@ import java.lang.annotation.Target;
  * Marks an event subscriber method as being thread-safe. This annotation indicates that EventBus
  * may invoke the event subscriber simultaneously from multiple threads.
  *
+ * 将事件订阅者方法标记为线程安全的。 这个注解表明 EventBus 可以从多个线程同时调用事件订阅者。
+ *
  * <p>This does not mark the method, and so should be used in combination with {@link Subscribe}.
  *
  * @author Cliff Biffle

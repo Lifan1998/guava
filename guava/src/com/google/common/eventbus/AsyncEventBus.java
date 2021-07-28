@@ -21,6 +21,8 @@ import java.util.concurrent.Executor;
  * An {@link EventBus} that takes the Executor of your choice and uses it to dispatch events,
  * allowing dispatch to occur asynchronously.
  *
+ * 一个 EventBus，它接受您选择的 Executor 并使用它来分派事件，从而允许异步分派。
+ *
  * @author Cliff Biffle
  * @since 10.0
  */

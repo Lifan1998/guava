@@ -51,6 +51,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Registry of subscribers to a single event bus.
  *
+ * 单个事件总线的订阅者注册表。
+ *
  * @author Colin Decker
  */
 final class SubscriberRegistry {

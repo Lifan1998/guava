@@ -23,6 +23,8 @@ import java.lang.annotation.Target;
 /**
  * Marks a method as an event subscriber.
  *
+ * 将方法标记为事件订阅者。
+ *
  * <p>The type of event will be indicated by the method's first (and only) parameter, which cannot
  * be primitive. If this annotation is applied to methods with zero parameters, or more than one
  * parameter, the object containing the method will not be able to register for event delivery from
