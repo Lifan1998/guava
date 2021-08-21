@@ -60,6 +60,8 @@ final class SubscriberRegistry {
   /**
    * All registered subscribers, indexed by event type.
    *
+   * 所有注册订阅者，按事件类型索引。
+   *
    * <p>The {@link CopyOnWriteArraySet} values make it easy and relatively lightweight to get an
    * immutable snapshot of all current subscribers to an event without any locking.
    */
@@ -67,6 +69,7 @@ final class SubscriberRegistry {
       Maps.newConcurrentMap();
 
   /** The event bus this registry belongs to. */
+  /** 该注册表所属的事件总线。 */
   @Weak private final EventBus bus;
 
   SubscriberRegistry(EventBus bus) {

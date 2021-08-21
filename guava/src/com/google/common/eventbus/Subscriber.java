@@ -37,6 +37,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 class Subscriber {
 
   /** Creates a {@code Subscriber} for {@code method} on {@code listener}. */
+
+  /** 在 listener 上为 method 创建一个 Subscriber。*/
   static Subscriber create(EventBus bus, Object listener, Method method) {
     return isDeclaredThreadSafe(method)
         ? new Subscriber(bus, listener, method)
@@ -44,15 +46,23 @@ class Subscriber {
   }
 
   /** The event bus this subscriber belongs to. */
+
+  /** 此订阅者所属的事件总线。 */
   @Weak private EventBus bus;
 
   /** The object with the subscriber method. */
+
+  /** 带有订阅者方法的对象。 */
   @VisibleForTesting final Object target;
 
   /** Subscriber method. */
+
+  /** 订阅者方法。 */
   private final Method method;
 
   /** Executor to use for dispatching events to this subscriber. */
+
+  /** 用于将事件分派给该订阅者的执行器。 */
   private final Executor executor;
 
   private Subscriber(EventBus bus, Object target, Method method) {
@@ -65,6 +75,8 @@ class Subscriber {
   }
 
   /** Dispatches {@code event} to this subscriber using the proper executor. */
+
+  /** 使用 Bus 指定的执行器将 event 分派给该订阅者。 */
   final void dispatchEvent(final Object event) {
     executor.execute(
         new Runnable() {
@@ -82,6 +94,8 @@ class Subscriber {
   /**
    * Invokes the subscriber method. This method can be overridden to make the invocation
    * synchronized.
+   *
+   * 调用订阅者方法。可以重写此方法同步调用
    */
   @VisibleForTesting
   void invokeSubscriberMethod(Object event) throws InvocationTargetException {
@@ -100,6 +114,8 @@ class Subscriber {
   }
 
   /** Gets the context for the given event. */
+
+  /** 获取给定事件的上下文。 */
   private SubscriberExceptionContext context(Object event) {
     return new SubscriberExceptionContext(bus, event, target, method);
   }
@@ -124,6 +140,10 @@ class Subscriber {
   /**
    * Checks whether {@code method} is thread-safe, as indicated by the presence of the {@link
    * AllowConcurrentEvents} annotation.
+   *
+   * 检查 method 是否是线程安全的，如  AllowConcurrentEvents 注释的存在所示。
+   *
+   * 如果方法上添加了 AllowConcurrentEvents 注解，会
    */
   private static boolean isDeclaredThreadSafe(Method method) {
     return method.getAnnotation(AllowConcurrentEvents.class) != null;
@@ -132,6 +152,8 @@ class Subscriber {
   /**
    * Subscriber that synchronizes invocations of a method to ensure that only one thread may enter
    * the method at a time.
+   *
+   * 同步方法调用以确保一次只能有一个线程进入该方法的订阅者。
    */
   @VisibleForTesting
   static final class SynchronizedSubscriber extends Subscriber {

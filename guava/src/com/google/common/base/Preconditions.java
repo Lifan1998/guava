@@ -867,6 +867,8 @@ public final class Preconditions {
   /**
    * Ensures that an object reference passed as a parameter to the calling method is not null.
    *
+   * 确保作为参数传递给调用方法的对象引用不为空。
+   *
    * @param reference an object reference
    * @return the non-null reference that was validated
    * @throws NullPointerException if {@code reference} is null
