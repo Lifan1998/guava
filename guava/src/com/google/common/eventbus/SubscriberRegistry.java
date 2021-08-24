@@ -90,23 +90,35 @@ final class SubscriberRegistry {
     Multimap<Class<?>, Subscriber> listenerMethods = findAllSubscribers(listener);
 
     for (Entry<Class<?>, Collection<Subscriber>> entry : listenerMethods.asMap().entrySet()) {
+      // 获取事件 Class 对象
       Class<?> eventType = entry.getKey();
+      // 获取订阅该事件的订阅者集合
       Collection<Subscriber> eventMethodsInListener = entry.getValue();
 
+      // 获取该事件已在注册表中的订阅者集合
       CopyOnWriteArraySet<Subscriber> eventSubscribers = subscribers.get(eventType);
 
+      // 如果注册表中没有该事件及其订阅者，就创建一个空的订阅者集合
       if (eventSubscribers == null) {
         CopyOnWriteArraySet<Subscriber> newSet = new CopyOnWriteArraySet<>();
+        // MoreObjects.firstNonNull: 返回两个给定参数中不是 null 的第一个参数，如果都是 null，抛出异常
+        // subscribers.putIfAbsent：将 event 和 空集合 放入map，这里起到关联两者的作用，还可以防止并发时该事件其他订阅者进来
         eventSubscribers =
             MoreObjects.firstNonNull(subscribers.putIfAbsent(eventType, newSet), newSet);
       }
-
+      // 将新的订阅者集合追加到注册表中（eventSubscribers 是一个Set，会去重的）
       eventSubscribers.addAll(eventMethodsInListener);
     }
   }
 
-  /** Unregisters all subscribers on the given listener object. */
+  /**
+   * Unregisters all subscribers on the given listener object.
+   *
+   * 取消注册给定监听器对象上的所有订阅者。
+   */
   void unregister(Object listener) {
+    // 获取给定监听器的所有订阅者，并按事件分类
+    // Multimap<事件, 订阅该事件的订阅者集合>
     Multimap<Class<?>, Subscriber> listenerMethods = findAllSubscribers(listener);
 
     for (Entry<Class<?>, Collection<Subscriber>> entry : listenerMethods.asMap().entrySet()) {
@@ -114,17 +126,27 @@ final class SubscriberRegistry {
       Collection<Subscriber> listenerMethodsForType = entry.getValue();
 
       CopyOnWriteArraySet<Subscriber> currentSubscribers = subscribers.get(eventType);
+      // 如果订阅者注册表查询不到该事件，就抛异常
+      // 如果订阅者注册表该事件的订阅者不为空，就尝试删除该监听器中的该事件的所有订阅者
+      // 如果删除 removeAll 失败，返回 false, 也抛异常。
+      // 什么时候回返回false呢？一个都没有删除成功，即两者没有交集元素，哪怕只删除一个，都会在删除后返回true
       if (currentSubscribers == null || !currentSubscribers.removeAll(listenerMethodsForType)) {
         // if removeAll returns true, all we really know is that at least one subscriber was
         // removed... however, barring something very strange we can assume that if at least one
         // subscriber was removed, all subscribers on listener for that event type were... after
         // all, the definition of subscribers on a particular class is totally static
+
+        // 如果 removeAll 返回 true，我们真正知道的是至少有一个订阅者被删除了……
+        // 但是，除非发生一些非常奇怪的事情，我们可以假设如果至少删除了一个订阅者，则该事件类型的侦听器上的所有订阅者都是……
+        // 毕竟，特定类上订阅者的定义是完全静态的
         throw new IllegalArgumentException(
             "missing event subscriber for an annotated method. Is " + listener + " registered?");
       }
 
       // don't try to remove the set if it's empty; that can't be done safely without a lock
+      // 如果集合为空，请不要尝试删除它； 没有锁就无法安全完成
       // anyway, if the set is empty it'll just be wrapping an array of length 0
+      // 无论如何，如果集合为空，它只会包装一个长度为 0 的数组
     }
   }
 
@@ -136,8 +158,12 @@ final class SubscriberRegistry {
   /**
    * Gets an iterator representing an immutable snapshot of all subscribers to the given event at
    * the time this method is called.
+   *
+   * 获取一个迭代器，调用此方法时给定事件的所有订阅者的不可变快照。
    */
   Iterator<Subscriber> getSubscribers(Object event) {
+
+    // 获取指定事件的所有超类（可传递的）和由这些超类实现的所有接口
     ImmutableSet<Class<?>> eventTypes = flattenHierarchy(event.getClass());
 
     List<Iterator<Subscriber>> subscriberIterators =
@@ -150,7 +176,7 @@ final class SubscriberRegistry {
         subscriberIterators.add(eventSubscribers.iterator());
       }
     }
-
+    // flat
     return Iterators.concat(subscriberIterators.iterator());
   }
 
@@ -193,6 +219,11 @@ final class SubscriberRegistry {
     return methodsInListener;
   }
 
+    /**
+     * 获取监听器所有带 @Subscribe 注解的方法
+     * @param clazz 监听器对象
+     * @return
+     */
   private static ImmutableList<Method> getAnnotatedMethods(Class<?> clazz) {
     try {
       return subscriberMethodsCache.getUnchecked(clazz);
@@ -254,6 +285,8 @@ final class SubscriberRegistry {
   /**
    * Flattens a class's type hierarchy into a set of {@code Class} objects including all
    * superclasses (transitively) and all interfaces implemented by these superclasses.
+   *
+   * 将类的类型层次结构扁平化为一组 {@code Class} 对象，包括所有超类（可传递的）和由这些超类实现的所有接口。
    */
   @VisibleForTesting
   static ImmutableSet<Class<?>> flattenHierarchy(Class<?> concreteClass) {

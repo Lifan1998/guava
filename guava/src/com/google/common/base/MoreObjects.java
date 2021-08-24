@@ -38,6 +38,8 @@ public final class MoreObjects {
    * Returns the first of two given parameters that is not {@code null}, if either is, or otherwise
    * throws a {@link NullPointerException}.
    *
+   * 返回两个给定参数中不是 null 的第一个参数，如果都是 null，抛出异常 {@link NullPointerException}。
+   *
    * <p>To find the first non-null element in an iterable, use {@code Iterables.find(iterable,
    * Predicates.notNull())}. For varargs, use {@code Iterables.find(Arrays.asList(a, b, c, ...),
    * Predicates.notNull())}, static importing as necessary.
