@@ -60,10 +60,14 @@ final class SubscriberRegistry {
   /**
    * All registered subscribers, indexed by event type.
    *
-   * 所有注册订阅者，按事件类型索引。
+   * 存储所有注册订阅者，按事件类型索引。
    *
    * <p>The {@link CopyOnWriteArraySet} values make it easy and relatively lightweight to get an
    * immutable snapshot of all current subscribers to an event without any locking.
+   *
+   * ConcurrentMap<注册事件Class, 订阅该事件的订阅者集合>
+   *
+   * 例：新用户注册后自动创建账户 ConcurrentMap<UserRegisterEvent, Set(AccountService.createAccount())>
    */
   private final ConcurrentMap<Class<?>, CopyOnWriteArraySet<Subscriber>> subscribers =
       Maps.newConcurrentMap();
@@ -76,8 +80,13 @@ final class SubscriberRegistry {
     this.bus = checkNotNull(bus);
   }
 
-  /** Registers all subscriber methods on the given listener object. */
+  /**
+   * Registers all subscriber methods on the given listener object.
+   * 注册给定的监听器对象上的所有订阅者方法。（该对象所有声明 @Subscribe 注解的方法）
+   */
   void register(Object listener) {
+    // 获取给定监听器的所有订阅者，并按事件分类
+    // Multimap<事件, 订阅该事件的订阅者集合>
     Multimap<Class<?>, Subscriber> listenerMethods = findAllSubscribers(listener);
 
     for (Entry<Class<?>, Collection<Subscriber>> entry : listenerMethods.asMap().entrySet()) {
@@ -164,13 +173,21 @@ final class SubscriberRegistry {
 
   /**
    * Returns all subscribers for the given listener grouped by the type of event they subscribe to.
+   *
+   * 返回给定监听器的所有订阅者，按订阅者订阅的事件类型分组。
    */
   private Multimap<Class<?>, Subscriber> findAllSubscribers(Object listener) {
+    // 创建一个HashMultimap， 等价于 HashMap<Class<?>, HashSet<Subscriber>>
     Multimap<Class<?>, Subscriber> methodsInListener = HashMultimap.create();
+    // 获取 Class 对象
     Class<?> clazz = listener.getClass();
+    // 获取监听器所有带 @Subscribe 注解的方法
     for (Method method : getAnnotatedMethods(clazz)) {
+      // 获取方法参数列表
       Class<?>[] parameterTypes = method.getParameterTypes();
+      // 取第一个参数为事件
       Class<?> eventType = parameterTypes[0];
+      // 创建订阅者对象并放进 Map 中
       methodsInListener.put(eventType, Subscriber.create(bus, listener, method));
     }
     return methodsInListener;

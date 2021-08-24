@@ -99,10 +99,15 @@ public class EventBus {
 
   private static final Logger logger = Logger.getLogger(EventBus.class.getName());
 
+  /**
+   * EventBus 标识符
+   */
   private final String identifier;
   private final Executor executor;
   private final SubscriberExceptionHandler exceptionHandler;
-
+  /**
+   * 订阅者注册表
+   */
   private final SubscriberRegistry subscribers = new SubscriberRegistry(this);
   private final Dispatcher dispatcher;
 
@@ -182,7 +187,10 @@ public class EventBus {
   /**
    * Registers all subscriber methods on {@code object} to receive events.
    *
-   * @param object object whose subscriber methods should be registered.
+   * 注册传入对象的所有订阅者方法以接收事件。
+   *
+   * @param object object whose subscriber methods should be registered. 要注册的含有订阅者方法的对象。
+   *
    */
   public void register(Object object) {
     subscribers.register(object);
@@ -191,8 +199,10 @@ public class EventBus {
   /**
    * Unregisters all subscriber methods on a registered {@code object}.
    *
+   * 取消注册已注册对象上的所有订阅者方法。
+   *
    * @param object object whose subscriber methods should be unregistered.
-   * @throws IllegalArgumentException if the object was not previously registered.
+   * @throws IllegalArgumentException if the object was not previously registered. 如果该对象先前未注册会抛异常
    */
   public void unregister(Object object) {
     subscribers.unregister(object);
@@ -203,8 +213,12 @@ public class EventBus {
    * event has been posted to all subscribers, and regardless of any exceptions thrown by
    * subscribers.
    *
+   * 向所有注册订阅者发布事件。在将事件发布给所有订阅者后，无论订阅者抛出任何异常，此方法都会成功返回。
+   *
    * <p>If no subscribers have been subscribed for {@code event}'s class, and {@code event} is not
    * already a {@link DeadEvent}, it will be wrapped in a DeadEvent and reposted.
+   *
+   * 如果 {@code event} 的类没有订阅者，并且 {@code event} 还不是 {@link DeadEvent}，它将被包装在 DeadEvent 中并重新发布。
    *
    * @param event event to post.
    */
@@ -224,6 +238,8 @@ public class EventBus {
   }
 
   /** Simple logging handler for subscriber exceptions. */
+
+  /** 订阅者异常的简单日志处理程序。 */
   static final class LoggingHandler implements SubscriberExceptionHandler {
     static final LoggingHandler INSTANCE = new LoggingHandler();
 
