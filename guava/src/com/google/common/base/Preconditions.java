@@ -207,6 +207,8 @@ public final class Preconditions {
   /**
    * Ensures the truth of an expression involving one or more parameters to the calling method.
    *
+   * 确保涉及调用方法的一个或多个参数的表达式的真实性。
+   *
    * <p>See {@link #checkArgument(boolean, String, Object...)} for details.
    *
    * @since 20.0 (varargs overload since 2.0)

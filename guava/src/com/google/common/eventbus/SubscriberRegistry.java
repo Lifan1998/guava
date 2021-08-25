@@ -267,13 +267,22 @@ final class SubscriberRegistry {
     return ImmutableList.copyOf(identifiers.values());
   }
 
-  /** Global cache of classes to their flattened hierarchy of supertypes. */
+  /**
+   * Global cache of classes to their flattened hierarchy of supertypes.
+   * 缓存类以及它的类型层次结构
+   */
   private static final LoadingCache<Class<?>, ImmutableSet<Class<?>>> flattenHierarchyCache =
       CacheBuilder.newBuilder()
           .weakKeys()
           .build(
               new CacheLoader<Class<?>, ImmutableSet<Class<?>>>() {
                 // <Class<?>> is actually needed to compile
+
+                /**
+                 *
+                 * @param concreteClass concreteClass
+                 * @return
+                 */
                 @SuppressWarnings("RedundantTypeArguments")
                 @Override
                 public ImmutableSet<Class<?>> load(Class<?> concreteClass) {
@@ -297,6 +306,9 @@ final class SubscriberRegistry {
     }
   }
 
+  /**
+   * 方法标识符
+   */
   private static final class MethodIdentifier {
 
     private final String name;

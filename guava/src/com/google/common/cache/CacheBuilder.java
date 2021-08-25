@@ -546,6 +546,8 @@ public final class CacheBuilder<K, V> {
    * Specifies that each key (not value) stored in the cache should be wrapped in a {@link
    * WeakReference} (by default, strong references are used).
    *
+   * 指定存储在缓存中的每个键（不是值）都应该包装在弱引用 {@link WeakReference} 中（默认情况下，使用强引用）。
+   *
    * <p><b>Warning:</b> when this method is used, the resulting cache will use identity ({@code ==})
    * comparison to determine equality of keys. Its {@link Cache#asMap} view will therefore
    * technically violate the {@link Map} specification (in the same way that {@link IdentityHashMap}

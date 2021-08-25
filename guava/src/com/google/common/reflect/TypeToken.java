@@ -683,7 +683,10 @@ public abstract class TypeToken<T> extends TypeCapture<T> implements Serializabl
       }
     }
 
-    /** Returns the raw types of the types in this set, in the same order. */
+    /**
+     * Returns the raw types of the types in this set, in the same order.
+     * 以相同的顺序返回此集合中类型的原始类型。
+     */
     public Set<Class<? super T>> rawTypes() {
       // Java has no way to express ? super T when we parameterize TypeToken vs. Class.
       @SuppressWarnings({"unchecked", "rawtypes"})

@@ -48,6 +48,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * A {@link List} whose contents will never change, with many other important properties detailed at
  * {@link ImmutableCollection}.
  *
+ * 一个内容不会改变的 {@link List}，在 {@link ImmutableCollection} 中详细介绍了许多其他重要属性。
+ *
  * <p>See the Guava User Guide article on <a href=
  * "https://github.com/google/guava/wiki/ImmutableCollectionsExplained"> immutable collections</a>.
  *

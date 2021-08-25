@@ -27,8 +27,12 @@ import java.util.concurrent.ExecutionException;
  * are stored in the cache until either evicted or manually invalidated. The common way to build
  * instances is using {@link CacheBuilder}.
  *
+ * 从键到值的半持久映射。值由缓存自动加载，并存储在缓存中，直到被逐出或手动失效。 构建实例的常用方法是使用 {@link CacheBuilder}。
+ *
  * <p>Implementations of this interface are expected to be thread-safe, and can be safely accessed
  * by multiple concurrent threads.
+ *
+ * 这个接口的实现应该是线程安全的，并且可以被多个并发线程安全地访问。
  *
  * <p>When evaluated as a {@link Function}, a cache yields the same result as invoking {@link
  * #getUnchecked}.
@@ -71,6 +75,10 @@ public interface LoadingCache<K, V> extends Cache<K, V>, Function<K, V> {
    * necessary. No observable state associated with this cache is modified until loading completes.
    * Unlike {@link #get}, this method does not throw a checked exception, and thus should only be
    * used in situations where checked exceptions are not thrown by the cache loader.
+   *
+   * 返回与此缓存中的 {@code key} 关联的值，如有必要，首先加载该值。
+   * 在加载完成之前，不会修改与此缓存关联的可观察状态。
+   * 与 {@link #get} 不同，此方法不会抛出已检查的异常，因此只应在缓存加载器未抛出已检查的异常的情况下使用。
    *
    * <p>If another call to {@link #get} or {@link #getUnchecked} is currently loading the value for
    * {@code key}, simply waits for that thread to finish and returns its loaded value. Note that
