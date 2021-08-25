@@ -27,6 +27,8 @@ import com.google.common.base.MoreObjects;
  * <p>Registering a DeadEvent subscriber is useful for debugging or logging, as it can detect
  * misconfigurations in a system's event distribution.
  *
+ * 注册 DeadEvent 订阅者对于调试或记录非常有用，因为它可以检测系统事件分发中的错误配置。
+ *
  * @author Cliff Biffle
  * @since 10.0
  */
@@ -39,8 +41,9 @@ public class DeadEvent {
   /**
    * Creates a new DeadEvent.
    *
-   * @param source object broadcasting the DeadEvent (generally the {@link EventBus}).
-   * @param event the event that could not be delivered.
+   * @param source object broadcasting the DeadEvent (generally the {@link EventBus}). 广播 DeadEvent 的对象（通常是 {@link EventBus}）。
+   *
+   * @param event the event that could not be delivered. 无法传递的事件。
    */
   public DeadEvent(Object source, Object event) {
     this.source = checkNotNull(source);
@@ -51,6 +54,8 @@ public class DeadEvent {
    * Returns the object that originated this event (<em>not</em> the object that originated the
    * wrapped event). This is generally an {@link EventBus}.
    *
+   * 返回发起此事件的对象（而不是发起包装事件的对象）。这通常是一个 {@link EventBus}。
+   *
    * @return the source of this event.
    */
   public Object getSource() {
@@ -60,6 +65,8 @@ public class DeadEvent {
   /**
    * Returns the wrapped, 'dead' event, which the system was unable to deliver to any registered
    * subscriber.
+   *
+   * 返回包装好的“死”事件，系统无法将其传递给任何注册订阅者。
    *
    * @return the 'dead' event that could not be delivered.
    */

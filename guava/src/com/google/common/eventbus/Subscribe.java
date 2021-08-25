@@ -30,8 +30,13 @@ import java.lang.annotation.Target;
  * parameter, the object containing the method will not be able to register for event delivery from
  * the {@link EventBus}.
  *
+ * 事件的类型将由方法的第一个（也是唯一的）参数指示，该参数不能是原始参数。
+ * 如果将此注释应用于具有零个参数或多个参数的方法，则包含该方法的对象将无法从 {@link EventBus} 注册事件传递。
+ *
  * <p>Unless also annotated with @{@link AllowConcurrentEvents}, event subscriber methods will be
  * invoked serially by each event bus that they are registered with.
+ *
+ * 用 @{@link AllowConcurrentEvents} 注释，事件订阅者方法将被它们注册的每个事件总线串行调用。
  *
  * @author Cliff Biffle
  * @since 10.0

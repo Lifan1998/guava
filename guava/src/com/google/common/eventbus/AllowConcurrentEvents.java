@@ -28,6 +28,8 @@ import java.lang.annotation.Target;
  *
  * <p>This does not mark the method, and so should be used in combination with {@link Subscribe}.
  *
+ * 他不单独标记方法，应与 {@link Subscribe} 一起使用
+ *
  * @author Cliff Biffle
  * @since 10.0
  */
