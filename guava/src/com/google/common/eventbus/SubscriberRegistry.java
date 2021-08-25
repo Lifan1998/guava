@@ -185,6 +185,9 @@ final class SubscriberRegistry {
    * all super-classes, that are annotated with {@code @Subscribe}. The cache is shared across all
    * instances of this class; this greatly improves performance if multiple EventBus instances are
    * created and objects of the same class are registered on all of them.
+   *
+   * 一个线程安全缓存，包含从每个类到该类和所有超类中的所有方法的映射，这些映射用 {@code @Subscribe} 注释。
+   * 缓存在此类的所有实例之间共享； 如果创建多个 EventBus 实例并在所有实例上注册同一类的对象，这将大大提高性能。
    */
   private static final LoadingCache<Class<?>, ImmutableList<Method>> subscriberMethodsCache =
       CacheBuilder.newBuilder()
@@ -226,6 +229,7 @@ final class SubscriberRegistry {
      */
   private static ImmutableList<Method> getAnnotatedMethods(Class<?> clazz) {
     try {
+      // 从缓存中查找类的带 @Subscribe 注解的方法，如果没有记录，缓存会调用加载器获取目标值并放入缓存
       return subscriberMethodsCache.getUnchecked(clazz);
     } catch (UncheckedExecutionException e) {
       throwIfUnchecked(e.getCause());
@@ -234,20 +238,23 @@ final class SubscriberRegistry {
   }
 
   private static ImmutableList<Method> getAnnotatedMethodsNotCached(Class<?> clazz) {
+    // 获取类以及超类的类型
     Set<? extends Class<?>> supertypes = TypeToken.of(clazz).getTypes().rawTypes();
     Map<MethodIdentifier, Method> identifiers = Maps.newHashMap();
     for (Class<?> supertype : supertypes) {
       for (Method method : supertype.getDeclaredMethods()) {
+        // 如果方法上声明了 Subscribe 注解并且不是构造器方法，放入 identifiers
         if (method.isAnnotationPresent(Subscribe.class) && !method.isSynthetic()) {
           // TODO(cgdecker): Should check for a generic parameter type and error out
           Class<?>[] parameterTypes = method.getParameterTypes();
+          // 检查方法参数数量，声明了 Subscribe 注解应当只有一个参数
           checkArgument(
               parameterTypes.length == 1,
               "Method %s has @Subscribe annotation but has %s parameters. "
                   + "Subscriber methods must have exactly 1 parameter.",
               method,
               parameterTypes.length);
-
+          // 检查方法参数类型，声明了 Subscribe 注解的方法入参不可以为原始数据类型
           checkArgument(
               !parameterTypes[0].isPrimitive(),
               "@Subscribe method %s's parameter is %s. "
@@ -258,6 +265,7 @@ final class SubscriberRegistry {
               Primitives.wrap(parameterTypes[0]).getSimpleName());
 
           MethodIdentifier ident = new MethodIdentifier(method);
+          // 判断是否已经包含了此方法，不包含才添加该方法
           if (!identifiers.containsKey(ident)) {
             identifiers.put(ident, method);
           }
@@ -279,7 +287,7 @@ final class SubscriberRegistry {
                 // <Class<?>> is actually needed to compile
 
                 /**
-                 *
+                 * 缓存加载器
                  * @param concreteClass concreteClass
                  * @return
                  */
@@ -300,6 +308,7 @@ final class SubscriberRegistry {
   @VisibleForTesting
   static ImmutableSet<Class<?>> flattenHierarchy(Class<?> concreteClass) {
     try {
+      // 从缓存中查找类的层次结构，如果没有记录，缓存会调用加载器获取目标值并放入缓存
       return flattenHierarchyCache.getUnchecked(concreteClass);
     } catch (UncheckedExecutionException e) {
       throw Throwables.propagate(e.getCause());
@@ -311,7 +320,14 @@ final class SubscriberRegistry {
    */
   private static final class MethodIdentifier {
 
+    /**
+     * 方法名
+     */
     private final String name;
+
+    /**
+     * 方法参数列表
+     */
     private final List<Class<?>> parameterTypes;
 
     MethodIdentifier(Method method) {
