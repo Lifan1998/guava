@@ -19,6 +19,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 
 /**
  * Marks an event subscriber method as being thread-safe. This annotation indicates that EventBus
@@ -29,6 +30,8 @@ import java.lang.annotation.Target;
  * <p>This does not mark the method, and so should be used in combination with {@link Subscribe}.
  *
  * 他不单独标记方法，应与 {@link Subscribe} 一起使用
+ *
+ * 他的实现在这 {@link Subscriber#create(EventBus, Object, Method)}
  *
  * @author Cliff Biffle
  * @since 10.0

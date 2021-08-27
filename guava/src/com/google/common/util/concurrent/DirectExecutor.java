@@ -20,6 +20,8 @@ import java.util.concurrent.Executor;
 /**
  * An {@link Executor} that runs each task in the thread that invokes {@link Executor#execute
  * execute}.
+ *
+ * 在调用 Executor#execute 的线程中直接运行任务
  */
 @GwtCompatible
 enum DirectExecutor implements Executor {

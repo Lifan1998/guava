@@ -119,8 +119,10 @@ public class EventBus {
   /**
    * Creates a new EventBus with the given {@code identifier}.
    *
+   * 使用给定的 {@code identifier} 创建一个新的 EventBus。
+   *
    * @param identifier a brief name for this bus, for logging purposes. Should be a valid Java
-   *     identifier.
+   *     identifier. 此总线的简短名称，用于记录目的。 应该是有效的 Java 标识符。
    */
   public EventBus(String identifier) {
     this(
@@ -133,7 +135,9 @@ public class EventBus {
   /**
    * Creates a new EventBus with the given {@link SubscriberExceptionHandler}.
    *
-   * @param exceptionHandler Handler for subscriber exceptions.
+   * 使用给定的 {@link SubscriberExceptionHandler} 创建一个新的 EventBus。
+   *
+   * @param exceptionHandler Handler for subscriber exceptions. 订阅者异常的处理程序。
    * @since 16.0
    */
   public EventBus(SubscriberExceptionHandler exceptionHandler) {
@@ -157,6 +161,7 @@ public class EventBus {
 
   /**
    * Returns the identifier for this event bus.
+   * 返回此事件总线的标识符。
    *
    * @since 19.0
    */
@@ -164,12 +169,19 @@ public class EventBus {
     return identifier;
   }
 
-  /** Returns the default executor this event bus uses for dispatching events to subscribers. */
+  /**
+   * Returns the default executor this event bus uses for dispatching events to subscribers.
+   * 返回此事件总线用于将事件分派给订阅者的默认执行器。
+   */
   final Executor executor() {
     return executor;
   }
 
-  /** Handles the given exception thrown by a subscriber with the given context. */
+  /**
+   * Handles the given exception thrown by a subscriber with the given context.
+   *
+   * 处理具有给定上下文的订阅者抛出的给定异常。
+   */
   void handleSubscriberException(Throwable e, SubscriberExceptionContext context) {
     checkNotNull(e);
     checkNotNull(context);
@@ -177,6 +189,7 @@ public class EventBus {
       exceptionHandler.handleException(e, context);
     } catch (Throwable e2) {
       // if the handler threw an exception... well, just log it
+      // 如果处理程序抛出异常......好吧，只需记录它
       logger.log(
           Level.SEVERE,
           String.format(Locale.ROOT, "Exception %s thrown while handling exception: %s", e2, e),
@@ -223,11 +236,15 @@ public class EventBus {
    * @param event event to post.
    */
   public void post(Object event) {
+    // 从订阅者注册表获取订阅该事件的所有订阅者
     Iterator<Subscriber> eventSubscribers = subscribers.getSubscribers(event);
+    // 判断是否有订阅者
     if (eventSubscribers.hasNext()) {
+      // 使用指定的调度器调度这些订阅者
       dispatcher.dispatch(event, eventSubscribers);
     } else if (!(event instanceof DeadEvent)) {
       // the event had no subscribers and was not itself a DeadEvent
+      // 该事件没有订阅者，本身也不是 DeadEvent
       post(new DeadEvent(this, event));
     }
   }

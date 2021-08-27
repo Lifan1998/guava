@@ -38,7 +38,10 @@ class Subscriber {
 
   /** Creates a {@code Subscriber} for {@code method} on {@code listener}. */
 
-  /** 在 listener 上为 method 创建一个 Subscriber。*/
+  /**
+   *  在 listener 上为 method 创建一个 Subscriber。
+   *  并这在判断是否添加了 {@link AllowConcurrentEvents} 注解，从而创建不同的订阅者
+   */
   static Subscriber create(EventBus bus, Object listener, Method method) {
     return isDeclaredThreadSafe(method)
         ? new Subscriber(bus, listener, method)
@@ -85,6 +88,7 @@ class Subscriber {
             try {
               invokeSubscriberMethod(event);
             } catch (InvocationTargetException e) {
+              // 使用 SubscriberExceptionHandler 来处理订阅者方法调用异常
               bus.handleSubscriberException(e.getCause(), context(event));
             }
           }
@@ -154,6 +158,10 @@ class Subscriber {
    * the method at a time.
    *
    * 同步方法调用以确保一次只能有一个线程进入该方法的订阅者。
+   *
+   * 注意这里不是说该事件的订阅者集合执行是串行的，而是包装这个方法的订阅者执行是串行的
+   * 比如事件A有两个订阅者，一个是 SynchronizedSubscriber (MethodA) 一个不是 (MethodB)
+   * 那么如果同时发布了多个事件A（比如多线程环境下），MethodA 和 MethodB 都会被执行，不同的是 MethodA 是串行的，因为事件即使有多个，但 MethodA 订阅者只有一个
    */
   @VisibleForTesting
   static final class SynchronizedSubscriber extends Subscriber {
