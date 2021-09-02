@@ -47,9 +47,14 @@ public interface LoadingCache<K, V> extends Cache<K, V>, Function<K, V> {
    * Returns the value associated with {@code key} in this cache, first loading that value if
    * necessary. No observable state associated with this cache is modified until loading completes.
    *
+   * 返回与此缓存中的 {@code key} 关联的值，如有必要，首先加载该值。 在加载完成之前，不会修改与此缓存关联的可观察状态。
+   *
    * <p>If another call to {@link #get} or {@link #getUnchecked} is currently loading the value for
    * {@code key}, simply waits for that thread to finish and returns its loaded value. Note that
    * multiple threads can concurrently load values for distinct keys.
+   *
+   * 如果对 {@link #get} 或 {@link #getUnchecked} 的另一个调用当前正在加载 {@code key} 的值，只需等待该线程完成并返回其加载的值。
+   * 请注意，多个线程可以同时加载不同键的值。
    *
    * <p>Caches loaded by a {@link CacheLoader} will call {@link CacheLoader#load} to load new values
    * into the cache. Newly loaded values are added to the cache using {@code
